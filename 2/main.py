@@ -26,22 +26,64 @@ def check_distance(readings, val):
     return True
 
 
-if __name__ == "__main__":
-    count = 0
+def read_input(filename):
     data = ""
-    with open("sample.txt", "r") as file:
+    with open(filename, "r") as file:
         data = file.read()
 
-    print(data)
     rows = data.strip().split("\n")
+    return rows
 
+
+def check_row(readings):
+    if check_increasing(readings) or check_decreasing(readings):
+        if check_distance(readings, 3):
+            return True
+    else:
+        return False
+
+
+def dampener(readings):
+    if check_row(readings):
+        return True
+    else:
+        for i in range(len(readings)):
+            if check_row(readings[:i] + readings[i+1:]):
+                return True
+    return False
+
+
+def part_1(filename):
+    count = 0
+
+    rows = read_input(filename)
     for idx, row in enumerate(rows):
         readings = row.split(" ")
         print(idx, readings)
-        if check_increasing(readings) or check_decreasing(readings):
-            if check_distance(readings, 3):
-                count = count + 1
-                print("valid")
+        if check_row(readings):
+            count = count + 1
+            print("valid")
         else:
             print("invalid")
     print(count)
+
+
+def part_2(filename):
+    count = 0
+
+    rows = read_input(filename)
+    for idx, row in enumerate(rows):
+        readings = row.split(" ")
+        print(idx, readings)
+        if dampener(readings):
+            count = count + 1
+            print("valid")
+        else:
+            print("invalid")
+    print(count)
+
+
+if __name__ == "__main__":
+    input_name = "input.txt"
+    # part_1(input_name)
+    part_2(input_name)
